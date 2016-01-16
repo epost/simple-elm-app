@@ -5,6 +5,7 @@ import Signal exposing (..)
 import StartApp.Simple as StartApp
 import String
 
+type alias Customer = {name : String, message : String}
 type alias Model = { customers : List Customer }
 
 model : Model
@@ -15,29 +16,20 @@ model = { customers = [
             ]
        }
 
-type alias Customer =
-  {
-    name : String
-    , message : String
-  }
+main =
+  StartApp.start { model = model , update = update, view = view }
 
 type alias Action = Int
 
-myView : Signal.Address Action -> Model -> Html.Html
-myView x y =
-  ul [class "grocery-list"]
-    [ li [] [text "Pamplemousse"]
-    , li [] [text "Ananas"]
-    , li [] [text "Jus d'orange"]
-    , li [] [text "Boeuf"]
-    , li [] [text "Soupe du jour"]
-    , li [] [text "Camembert"]
-    , li [] [text "Jacques Cousteau"]
-    , li [] [text "Baguette"]
-    ]
+view : Signal.Address Action -> Model -> Html.Html
+view x y =
+  div []
+    [div [] [text model.name]]
 
-updateModel : Action -> Model -> Model
-updateModel a m = m
 
-main =
-  StartApp.start { model = model, view = myView, update = updateModel }
+update : Action -> Model -> Model
+update x y = y
+
+customerToHtml : Customer -> List Html
+customerToHtml customer =
+  [div [] [text customer.name]]
