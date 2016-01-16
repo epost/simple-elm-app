@@ -26,7 +26,7 @@ view action model =
   customers model.customers
 
 update : Action -> Model -> Model
-update x y = y
+update _ y = y
 
 customers : List Customer -> Html
 customers customers =
