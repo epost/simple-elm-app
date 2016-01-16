@@ -10,26 +10,31 @@ type alias Model = { customers : List Customer }
 
 model : Model
 model = { customers = [
-                {name = "Daniel Gomez", message = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros."},
-                {name =  "Emil Haugberg van Veen", message = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros."},
-                {name =  "Luca Verhees", message =  "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros."}
+                {name = "Daniel Gomez", message = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. "},
+                {name =  "Emil Haugberg van Veen", message = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit."},
+                {name =  "Luca Verhees", message =  "Lorem ipsum dolor sit amet, consectetuer adipiscing elit."}
             ]
        }
 
 main =
   StartApp.start { model = model , update = update, view = view }
 
-type alias Action = Int
+type alias Action = String
 
 view : Signal.Address Action -> Model -> Html.Html
 view x y =
-  div []
-    [div [] [text model.name]]
-
+  customers y.customers
 
 update : Action -> Model -> Model
 update x y = y
 
-customerToHtml : Customer -> List Html
-customerToHtml customer =
-  [div [] [text customer.name]]
+customers : List Customer -> Html
+customers customers =
+  div [] (List.map customer customers )
+
+customer : Customer -> Html
+customer customer =
+    div []
+      [div [] [text customer.name]
+      , div [] [text customer.message]
+      ]
