@@ -65,9 +65,9 @@ newCustomer id name message =
   , message = message
   }
 
-customers : Address Action -> List Customer -> Html
-customers action customers =
-  div [] (List.map customer action customers )
+customers : List Customer -> Html
+customers customers =
+  div [] (List.map customer customers )
 
 customer : Address Action -> Customer -> Html
 customer action customer =
