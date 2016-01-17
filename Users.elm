@@ -5,18 +5,22 @@ import Signal exposing (..)
 import StartApp.Simple as StartApp
 import String
 
-type alias Customer = {name : String, message : String}
+type alias CustomerId = Int
+type alias Customer = { id : CustomerId, name : String, message : String}
 type alias Uistate = {fieldName : String, fieldMessage : String }
-type alias Model = { customers : List Customer, fieldName : String, fieldMessage : String}
+type alias Model = { fieldName : String, fieldMessage : String, uid : Int, customers : List Customer}
 
 model : Model
-model = { customers = [
-                {name = "Daniel Gomez", message = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. "},
-                {name =  "Emil Haugberg van Veen", message = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit."},
-                {name =  "Luca Verhees", message =  "Lorem ipsum dolor sit amet, consectetuer adipiscing elit."}
+model = {
+            fieldName = ""
+            , fieldMessage = ""
+            , uid = 0
+            ,customers = [
+                { id = 0 , name = "Daniel Gomez", message = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. "},
+                { id = 1, name =  "Emil Haugberg van Veen", message = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit."},
+                { id = 2, name =  "Luca Verhees", message =  "Lorem ipsum dolor sit amet, consectetuer adipiscing elit."}
             ]
-          , fieldName = ""
-          , fieldMessage = ""
+
        }
 
 main =
@@ -40,22 +44,25 @@ view action model =
     ]
 
 
-type Action = SetName String | SetMessage String | Add
+type Action = SetName String | SetMessage String | Delete Int | Add
 update : Action -> Model -> Model
 update action model =
   case action of
     Add ->
       {model |
-        customers = model.customers ++ [newCustomer model.fieldName model.fieldMessage]
-        , fieldName = ""
+        fieldName = ""
         , fieldMessage = ""
+        , uid = model.uid + 1
+        , customers = model.customers ++ [newCustomer model.uid model.fieldName model.fieldMessage]
       }
     SetName str -> {model | fieldName = str}
     SetMessage str -> {model | fieldMessage = str}
+    Delete id -> {model | customers = List.filter (\t -> t.id /= id) model.customers}
 
-newCustomer : String -> String -> Customer
-newCustomer name message =
-  { name = name
+newCustomer : CustomerId -> String -> String -> Customer
+newCustomer id name message =
+  { id = id
+  ,name = name
   , message = message
   }
 
@@ -63,9 +70,14 @@ customers : List Customer -> Html
 customers customers =
   div [] (List.map customer customers )
 
-customer : Customer -> Html
-customer customer =
+customer : Address Action -> Customer -> Html
+customer action customer =
     div []
       [div [] [text customer.name]
       , div [] [text customer.message]
+      , button
+            [ class "destroy"
+            , onClick action (Delete customer.id)
+            ]
+            [ text "Delete" ]
       ]

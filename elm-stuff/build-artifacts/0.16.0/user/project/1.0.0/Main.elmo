@@ -1,0 +1,80 @@
+Elm.Main = Elm.Main || {};
+Elm.Main.make = function (_elm) {
+   "use strict";
+   _elm.Main = _elm.Main || {};
+   if (_elm.Main.values) return _elm.Main.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $Html$Attributes = Elm.Html.Attributes.make(_elm),
+   $Html$Events = Elm.Html.Events.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm),
+   $StartApp$Simple = Elm.StartApp.Simple.make(_elm);
+   var _op = {};
+   var customer = function (customer) {
+      return A2($Html.div,
+      _U.list([]),
+      _U.list([A2($Html.div,_U.list([]),_U.list([$Html.text(customer.name)])),A2($Html.div,_U.list([]),_U.list([$Html.text(customer.message)]))]));
+   };
+   var customers = function (customers) {    return A2($Html.div,_U.list([]),A2($List.map,customer,customers));};
+   var newCustomer = F3(function (id,name,message) {    return {id: id,name: name,message: message};});
+   var update = F2(function (action,model) {
+      var _p0 = action;
+      switch (_p0.ctor)
+      {case "Add": return _U.update(model,
+           {fieldName: ""
+           ,fieldMessage: ""
+           ,uid: model.uid + 1
+           ,customers: A2($Basics._op["++"],model.customers,_U.list([A3(newCustomer,model.uid,model.fieldName,model.fieldMessage)]))});
+         case "SetName": return _U.update(model,{fieldName: _p0._0});
+         case "SetMessage": return _U.update(model,{fieldMessage: _p0._0});
+         default: return _U.update(model,{customers: A2($List.filter,function (t) {    return !_U.eq(t.id,_p0._0);},model.customers)});}
+   });
+   var Add = {ctor: "Add"};
+   var Delete = function (a) {    return {ctor: "Delete",_0: a};};
+   var SetMessage = function (a) {    return {ctor: "SetMessage",_0: a};};
+   var SetName = function (a) {    return {ctor: "SetName",_0: a};};
+   var view = F2(function (action,model) {
+      return A2($Html.div,
+      _U.list([]),
+      _U.list([customers(model.customers)
+              ,A2($Html.input,
+              _U.list([$Html$Attributes.placeholder("Name")
+                      ,A3($Html$Events.on,"input",$Html$Events.targetValue,function (_p1) {    return A2($Signal.message,action,SetName(_p1));})]),
+              _U.list([]))
+              ,A2($Html.input,
+              _U.list([$Html$Attributes.placeholder("Message")
+                      ,A3($Html$Events.on,"input",$Html$Events.targetValue,function (_p2) {    return A2($Signal.message,action,SetMessage(_p2));})]),
+              _U.list([]))
+              ,A2($Html.button,_U.list([A2($Html$Events.onClick,action,Add)]),_U.list([$Html.text("add")]))]));
+   });
+   var model = {fieldName: ""
+               ,fieldMessage: ""
+               ,uid: 0
+               ,customers: _U.list([{id: 0,name: "Daniel Gomez",message: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. "}
+                                   ,{id: 1,name: "Emil Haugberg van Veen",message: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit."}
+                                   ,{id: 2,name: "Luca Verhees",message: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit."}])};
+   var main = $StartApp$Simple.start({model: model,update: update,view: view});
+   var Model = F4(function (a,b,c,d) {    return {fieldName: a,fieldMessage: b,uid: c,customers: d};});
+   var Uistate = F2(function (a,b) {    return {fieldName: a,fieldMessage: b};});
+   var Customer = F3(function (a,b,c) {    return {id: a,name: b,message: c};});
+   return _elm.Main.values = {_op: _op
+                             ,Customer: Customer
+                             ,Uistate: Uistate
+                             ,Model: Model
+                             ,model: model
+                             ,main: main
+                             ,view: view
+                             ,SetName: SetName
+                             ,SetMessage: SetMessage
+                             ,Delete: Delete
+                             ,Add: Add
+                             ,update: update
+                             ,newCustomer: newCustomer
+                             ,customers: customers
+                             ,customer: customer};
+};
