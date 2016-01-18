@@ -4,6 +4,7 @@ import Html.Events exposing (..)
 import Signal exposing (..)
 import StartApp.Simple as StartApp
 
+
 type alias Customer = { id : Int, name : String, message : String }
 
 type alias Model    = { fieldName : String, fieldMessage : String, uid : Int, customers : List Customer}
@@ -20,17 +21,7 @@ model = { fieldName = ""
                       ]
         }
 
-main : Signal Html
-main = StartApp.start { model = model, update = update, view = view }
-
-view : Signal.Address Action -> Model -> Html.Html
-view adr model =
-  div []
-    [ customersHtml model.customers adr
-    , input [placeholder "Name"   , on "input" targetValue (Signal.message adr << SetName   )] []
-    , input [placeholder "Message", on "input" targetValue (Signal.message adr << SetMessage)] []
-    , button [onClick adr Add] [text "add"]
-    ]
+--------------------------------------------------------------------------------
 
 update : Action -> Model -> Model
 update action model = case action of
@@ -43,8 +34,16 @@ update action model = case action of
   SetMessage str -> { model | fieldMessage = str }
   Delete id      -> { model | customers = List.filter (\t -> t.id /= id) model.customers }
 
-mkCustomer : Int -> String -> String -> Customer
-mkCustomer id name message = { id = id, name = name, message = message }
+--------------------------------------------------------------------------------
+
+view : Signal.Address Action -> Model -> Html.Html
+view adr model =
+  div []
+    [ customersHtml model.customers adr
+    , input [placeholder "Name"   , on "input" targetValue (Signal.message adr << SetName   )] []
+    , input [placeholder "Message", on "input" targetValue (Signal.message adr << SetMessage)] []
+    , button [onClick adr Add] [text "add"]
+    ]
 
 customersHtml : List Customer -> Address Action -> Html
 customersHtml customers adr =
@@ -56,3 +55,8 @@ customerHtml customer adr =
            , div [] [text customer.message]
            , button [class "destroy", onClick adr (Delete customer.id)] [text "Delete"]
            ]
+
+--------------------------------------------------------------------------------
+
+main : Signal Html
+main = StartApp.start { model = model, update = update, view = view }
