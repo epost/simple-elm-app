@@ -28,7 +28,9 @@ update action model = case action of
   Add -> { model | fieldName = ""
                  , fieldMessage = ""
                  , uid = model.uid + 1
-                 , customers = model.customers ++ [newCustomer model.uid model.fieldName model.fieldMessage]
+                 , customers = model.customers ++ [{ id = model.uid
+                                                   , name = model.fieldName
+                                                   , message = model.fieldMessage }]
          }
   SetName str    -> { model | fieldName = str }
   SetMessage str -> { model | fieldMessage = str }
