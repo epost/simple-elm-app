@@ -3,25 +3,21 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Signal exposing (..)
 import StartApp.Simple as StartApp
--- import String
 
-type alias Customer = { id : Int, name : String, message : String}
-type alias Uistate = {fieldName : String, fieldMessage : String }
-type alias Model = { fieldName : String, fieldMessage : String, uid : Int, customers : List Customer}
+type alias Customer = { id : Int, name : String, message : String }
+type alias Model    = { fieldName : String, fieldMessage : String, uid : Int, customers : List Customer}
 
 model : Model
-model = {
-            fieldName = ""
-            , fieldMessage = ""
-            , uid = 0
-            ,customers = [
-                { id = 0 , name = "Daniel Gomez", message = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. "},
-                { id = 1, name =  "Emil Haugberg van Veen", message = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit."},
-                { id = 2, name =  "Luca Verhees", message =  "Lorem ipsum dolor sit amet, consectetuer adipiscing elit."}
-            ]
+model = { fieldName = ""
+        , fieldMessage = ""
+        , uid = 0
+        , customers = [ { id = 0, name = "Daniel Gomez"          , message = "UI nerd" }
+                      , { id = 1, name = "Emil Haugberg van Veen", message = "UI + FP nerd" }
+                      , { id = 2, name = "Luca Verhees"          , message = "UI nerd" }
+                      ]
+        }
 
-       }
-
+main : Signal Html
 main =
   StartApp.start { model = model , update = update, view = view }
 
@@ -34,7 +30,7 @@ view adr model =
         , on "input" targetValue (Signal.message adr << SetName)
         ]
         []
-    ,input
+    , input
         [ placeholder "Message"
         , on "input" targetValue (Signal.message adr << SetMessage)
         ]
@@ -66,26 +62,18 @@ newCustomer id name message =
   , message = message
   }
 
--- customersHtml : Address Action -> List Customer -> Html
--- customersHtml adr customers =
---   div [] (List.map (customerHtml adr) customers)
 customersHtml : List Customer -> Address Action -> Html
 customersHtml customers adr =
   div [] (List.map ((flip customerHtml) adr) customers)
--- customersHtml : List Customer -> Html
--- customersHtml customers =
 
--- customerHtml : Customer -> Html
--- customerHtml customer =
--- customerHtml : Address Action -> Customer -> Html
--- customerHtml adr customer =
 customerHtml : Customer -> Address Action -> Html
 customerHtml customer adr =
     div []
       [ div [] [text customer.name]
       , div [] [text customer.message]
       , button
-            [ onClick adr (Delete customer.id)
+            [ class "destroy"
+            , onClick adr (Delete customer.id)
             ]
             [ text "Delete" ]
       ]
